@@ -1,7 +1,7 @@
 import frappe
 from korecent.korecent.utilities import init_response, create_customer, create_order, create_item
 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def create_sales_order(customer, items, customer_billing_currency=None, item_group=None, stock_uom=None):
     """
     Create a new Sales Order.
@@ -11,20 +11,20 @@ def create_sales_order(customer, items, customer_billing_currency=None, item_gro
                 "customer": "CUST-001",
                 "items": [
                     {
-                    "item_name": "Item A",
-                    "qty": 10,
-                    "rate": 100,
-                    "delivery_date": "2024-04-30",
-                    "item_group": "Product",
-                    "stock_uom": "Nos"
+                        "item_name": "Item A",
+                        "qty": 10,
+                        "rate": 100,
+                        "delivery_date": "2024-04-30",
+                        "item_group": "Product",
+                        "stock_uom": "Nos"
                     },
                     {
-                    "item_name": "Item B",
-                    "qty": 5,
-                    "rate": 200,
-                    "delivery_date": "2024-04-30",
-                    "item_group": "Product",
-                    "stock_uom": "Nos"
+                        "item_name": "Item B",
+                        "qty": 5,
+                        "rate": 200,
+                        "delivery_date": "2024-04-30",
+                        "item_group": "Product",
+                        "stock_uom": "Nos"
                     }
                 ],
                 "customer_billing_currency": "INR"
@@ -33,6 +33,7 @@ def create_sales_order(customer, items, customer_billing_currency=None, item_gro
     Response:
         dict: {"status": "success", "data": {"sales_order": "sal-ord-01"}, "error": {"message": "", "traceback": ""}}
 
+    Note: Add Authorization in headers with given api-key and api-secret. (e.g. "Token api-key:api-secret")
     """
     RESPONSE = init_response()
     try:
