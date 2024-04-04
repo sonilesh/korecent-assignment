@@ -1,6 +1,41 @@
 ### Korecent
 
-Assignment
+Custom App for following functionalities:
+
+1. Generate PO automatically when SO is submitted with supplier in item child table entries.
+
+2. API for inserting Sales orders in erpnext with and without master data of customer and items in erpnext.
+Note: Create master data if it doesn't exists.
+
+API Endpoint: /api/method/korecent.korecent.api.v1.create_sales_order
+Sample Payload: {
+    "customer": "CUST-003",
+    "items": [
+        {
+            "item_name": "Item D",
+            "qty": 100,
+            "rate": 100,
+            "delivery_date": "30-04-2024"
+        },
+        {
+            "item_name": "Headphones",
+            "qty": 300,
+            "rate": 200,
+            "delivery_date": "30-04-2024"
+        }
+    ]
+}
+Sample Response: {
+    "status": "success",
+    "data": {
+        "sales_order": "SAL-ORD-2024-00001"
+    },
+    "error": {
+        "message": "",
+        "traceback": ""
+    }
+}
+Note: Use Authorization token in headers with API Key and Secret to hit the API.
 
 ### Installation
 
