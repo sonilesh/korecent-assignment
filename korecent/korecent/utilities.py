@@ -11,24 +11,26 @@ def init_response():
 def create_order(customer, items):
     order = frappe.new_doc("Sales Order")
     order.customer = customer
+    # Finding conversion rate based on customer billing currency to make the pricing according to currency exchange rate
     customer_currency = frappe.get_value("Customer", customer, "default_currency")
     conversion_rate = 1
     if customer_currency and customer_currency != "INR":
         conversion_rate = get_exchange_rate(customer_currency, "INR")
     order.conversion_rate = conversion_rate
+    # Finding customer primary shipping address and setting it into new sales order
     customer_shipping_address = frappe.get_all("Dynamic Link", {"link_doctype": "Customer", "link_name": customer, "parenttype": "Address"}, ["parent"], pluck="parent")
     for address in customer_shipping_address:
         if frappe.get_value("Address", address, "is_shipping_address"):
             order.shipping_address = address
             break
-    
+    # Updating sales order item child table with the items and keeping "Finished Goods - KD" as default delivery warehouse
     for item in items:
         order.append(
             "items",
             {
                 "doctype": "Order Item",
-                "item_code": item.get("item_code"),
-                "item_name": frappe.get_value("Item", item.get("item_code"), "item_name"),
+                "item_code": frappe.get_value("Item", {"item_name":item.get("item_name")}, "item_code"),
+                "item_name": item.get("item_name"),
                 "qty": item.get("qty"),
                 "size": item.get("size"),
                 "rate": item.get("rate") * conversion_rate,
@@ -38,6 +40,7 @@ def create_order(customer, items):
                 "base_rate": item.get("rate"),
                 "base_amount": item.get("rate") * item.get("qty"),
                 "amount": item.get("rate") * item.get("qty") * conversion_rate,
+                "warehouse": "Finished Goods - KD"
             },
         )
     order.insert(ignore_permissions=True)
@@ -59,7 +62,7 @@ def create_item(item_name, item_group=None, stock_uom=None):
     if item_group and frappe.db.exists("Item Group", item_group):
         ig = item_group
     uom = "Nos"
-    if stock_uom and frappe.db.exists("Stock UOM", stock_uom):
+    if stock_uom and frappe.db.exists("UOM", stock_uom):
         uom = stock_uom
     
     item = frappe.get_doc({
