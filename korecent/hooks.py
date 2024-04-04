@@ -130,6 +130,8 @@ app_license = "mit"
 # 	}
 # }
 
+doc_events = {"Sales Order": {"on_submit": "korecent.korecent.overrides.sales_order.on_submit"}}
+
 # Scheduled Tasks
 # ---------------
 
